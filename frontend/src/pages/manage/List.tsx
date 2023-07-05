@@ -1,11 +1,13 @@
-import React, { FC, useState } from 'react'
-import QuestionCard from '../components/QuestionCard'
+import React, { FC } from 'react'
+import { useTitle } from 'ahooks'
+import QuestionCard from '../../components/QuestionCard'
 import styles from './List.module.scss'
-import { produce } from 'immer'
+// import { produce } from 'immer'
 
-const List1: FC = () => {
+const List: FC = () => {
+  useTitle('蜗牛问卷 | 我的问卷')
   // 问卷列表数据
-  const [questionList, setQuestionList] = useState([
+  const questionList = [
     {
       _id: 'q1',
       title: '问卷调查1',
@@ -46,61 +48,61 @@ const List1: FC = () => {
       answerCount: 0,
       createdAt: '2023-07-03 18:20',
     },
-  ])
+  ]
 
-  function add() {
-    // 新增 concat
-    const r = Math.random().toString().slice(-3)
-    // setQuestionList(
-    //   questionList.concat({
-    //     id: 'q' + r,
-    //     title: '问卷调查' + r,
-    //     isPublished: false,
-    //   })
-    // )
-    setQuestionList(
-      produce(draft => {
-        draft.push({
-          _id: 'q' + r,
-          title: '问卷调查' + r,
-          isPublished: false,
-          isStar: false,
-          answerCount: 0,
-          createdAt: '2023-07-05 12:00',
-        })
-      })
-    )
-  }
+  // function add() {
+  //   // 新增 concat
+  //   const r = Math.random().toString().slice(-3)
+  //   // setQuestionList(
+  //   //   questionList.concat({
+  //   //     id: 'q' + r,
+  //   //     title: '问卷调查' + r,
+  //   //     isPublished: false,
+  //   //   })
+  //   // )
+  //   setQuestionList(
+  //     produce(draft => {
+  //       draft.push({
+  //         _id: 'q' + r,
+  //         title: '问卷调查' + r,
+  //         isPublished: false,
+  //         isStar: false,
+  //         answerCount: 0,
+  //         createdAt: '2023-07-05 12:00',
+  //       })
+  //     })
+  //   )
+  // }
 
-  function deleteQuestion(id: string) {
-    // 删除 filter
-    // setQuestionList(questionList.filter(q => q.id !== id))
-    setQuestionList(
-      produce(draft => {
-        const index = draft.findIndex(q => q._id === id)
-        draft.splice(index, 1)
-      })
-    )
-  }
+  // function deleteQuestion(id: string) {
+  //   // 删除 filter
+  //   // setQuestionList(questionList.filter(q => q.id !== id))
+  //   setQuestionList(
+  //     produce(draft => {
+  //       const index = draft.findIndex(q => q._id === id)
+  //       draft.splice(index, 1)
+  //     })
+  //   )
+  // }
 
-  function publishQuestion(id: string) {
-    // 修改 map
-    // setQuestionList(
-    //   questionList.map(q => {
-    //     if (q.id !== id) return q
-    //     return {
-    //       ...q,
-    //       isPublished: true,
-    //     }
-    //   })
-    // )
-    setQuestionList(
-      produce(draft => {
-        const item = draft.find(q => q._id === id)
-        if (item) item.isPublished = true
-      })
-    )
-  }
+  // function publishQuestion(id: string) {
+  //   // 修改 map
+  //   // setQuestionList(
+  //   //   questionList.map(q => {
+  //   //     if (q.id !== id) return q
+  //   //     return {
+  //   //       ...q,
+  //   //       isPublished: true,
+  //   //     }
+  //   //   })
+  //   // )
+  //   setQuestionList(
+  //     produce(draft => {
+  //       const item = draft.find(q => q._id === id)
+  //       if (item) item.isPublished = true
+  //     })
+  //   )
+  // }
 
   // return (
   //   <>
@@ -147,4 +149,4 @@ const List1: FC = () => {
   )
 }
 
-export default List1
+export default List

@@ -1,13 +1,14 @@
 import React from 'react'
-import List1 from './pages/List'
+import List from './pages/manage/List'
+import { RouterProvider } from 'react-router-dom'
+import router from './router'
 
 function App() {
   // 列表页
   return (
-    <>
-      <h1>问卷调查</h1>
-      <List1></List1>
-    </>
+    <React.StrictMode>
+      <RouterProvider router={router}></RouterProvider>
+    </React.StrictMode>
   )
 }
 
