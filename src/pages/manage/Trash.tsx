@@ -4,6 +4,7 @@ import { Empty, Typography, Table, Tag, Space, Button, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 // import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
+import ListSearch from '../../components/ListSearch'
 // import { produce } from 'immer'
 
 const { Title } = Typography
@@ -100,7 +101,9 @@ const Trash: FC = () => {
         <div className={styles.left}>
           <Title level={2}>回收站</Title>
         </div>
-        <div className={styles.right}>(搜索)</div>
+        <div className={styles.right}>
+          <ListSearch />
+        </div>
       </div>
       <div className={styles.content}>
         {questionList.length === 0 && <Empty description="暂无数据"></Empty>}
