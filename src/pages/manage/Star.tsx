@@ -1,34 +1,18 @@
 import React, { FC } from 'react'
 import { useTitle } from 'ahooks'
-import { Empty, Typography } from 'antd'
+import { Empty, Spin, Typography } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 import ListSearch from '../../components/ListSearch'
-// import { produce } from 'immer'
+import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 
 const { Title } = Typography
 
 const Star: FC = () => {
   useTitle('蜗牛问卷 | 星标问卷')
-  // 问卷列表数据
-  const questionList = [
-    {
-      _id: 'q2',
-      title: '问卷调查2',
-      isPublished: true,
-      isStar: true,
-      answerCount: 11,
-      createdAt: '2023-06-19 13:00',
-    },
-    {
-      _id: 'q4',
-      title: '问卷调查4',
-      isPublished: false,
-      isStar: true,
-      answerCount: 2,
-      createdAt: '2023-06-28 15:00',
-    },
-  ]
+
+  const { data = {}, loading } = useLoadQuestionListData({ isStar: true })
+  const { list = [] } = data
 
   return (
     <>
@@ -41,9 +25,16 @@ const Star: FC = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {questionList.length === 0 && <Empty description="暂无数据"></Empty>}
-        {questionList.length > 0 &&
-          questionList.map(q => {
+        {loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin />
+          </div>
+        )}
+        {!loading && list.length === 0 && <Empty description="暂无数据"></Empty>}
+        {!loading &&
+          list.length > 0 &&
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          list.map((q: any) => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })}
