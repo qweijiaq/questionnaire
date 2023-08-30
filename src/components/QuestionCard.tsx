@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 // import classNames from 'classnames'
 import { useNavigate, Link } from 'react-router-dom'
 import { Button, Space, Divider, Tag, Popconfirm, Modal, message } from 'antd'
@@ -10,7 +10,9 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
+import { updateQuestionService } from '../services/question'
 import styles from './QuestionCard.module.scss'
+import { useRequest } from 'ahooks'
 
 // ts 自定义类型
 type PropsType = {
@@ -41,45 +43,20 @@ const QuestionCard: FC<PropsType> = props => {
     })
   }
 
-  // function publish(id: string) {
-  //   publishQuestion(id)
-  // }
-
-  // function del(id: string) {
-  //   deleteQuestion(id)
-  // }
-
-  // const listItemClass = styles['list-item']
-  // const publishedClass = styles.published
-  // const itemClassName = classNames({
-  //   [listItemClass]: true,
-  //   [publishedClass]: isPublished,
-  // })
-
-  // return (
-  //   <div key={_id} className={itemClassName}>
-  //     <strong>{title}</strong>
-  //     &nbsp;
-  //     {/* 条件判断 */}
-  //     {isPublished ? <span className={styles['published-span']}>已发布</span> : <span>未发布</span>}
-  //     &nbsp;
-  //     <button
-  //       onClick={() => {
-  //         // publish(_id)
-  //       }}
-  //     >
-  //       发布
-  //     </button>
-  //     &nbsp;
-  //     <button
-  //       onClick={() => {
-  //         // del(_id)
-  //       }}
-  //     >
-  //       删除
-  //     </button>
-  //   </div>
-  // )
+  // 标星与取消标星
+  const [isStarState, setIsStarState] = useState(isStar)
+  const { loading: changeStarLoading, run: changeStar } = useRequest(
+    async () => {
+      await updateQuestionService(_id, { isStar: !isStarState })
+    },
+    {
+      manual: true,
+      onSuccess() {
+        setIsStarState(!isStarState) // 更新 state
+        message.success('已更新')
+      },
+    }
+  )
 
   return (
     <>
@@ -88,7 +65,7 @@ const QuestionCard: FC<PropsType> = props => {
           <div className={styles.left}>
             <Link to={isPublished ? `/question/stat/${_id}` : `/question/edit/${_id}`}>
               <Space>
-                {isStar && <StarOutlined style={{ color: 'purple' }} />}
+                {isStarState && <StarOutlined style={{ color: 'purple' }} />}
                 {title}
               </Space>
             </Link>
@@ -126,8 +103,13 @@ const QuestionCard: FC<PropsType> = props => {
           </div>
           <div className={styles.right}>
             <Space>
-              <Button type="text" icon={<StarOutlined />}>
-                {isStar ? '取消标星' : '标星'}
+              <Button
+                type="text"
+                icon={<StarOutlined />}
+                onClick={changeStar}
+                disabled={changeStarLoading}
+              >
+                {isStarState ? '取消标星' : '标星'}
               </Button>
               <Popconfirm
                 title="确定复制该问卷？"
