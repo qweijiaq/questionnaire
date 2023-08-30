@@ -10,7 +10,7 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { updateQuestionService } from '../services/question'
+import { duplicateQuestionService, updateQuestionService } from '../services/question'
 import styles from './QuestionCard.module.scss'
 import { useRequest } from 'ahooks'
 
@@ -31,10 +31,6 @@ const QuestionCard: FC<PropsType> = props => {
   const nav = useNavigate()
   const { confirm } = Modal
 
-  function duplicate() {
-    message.success('执行复制')
-  }
-
   function del() {
     confirm({
       title: '确定删除该问卷？',
@@ -54,6 +50,18 @@ const QuestionCard: FC<PropsType> = props => {
       onSuccess() {
         setIsStarState(!isStarState) // 更新 state
         message.success('已更新')
+      },
+    }
+  )
+
+  // 复制
+  const { loading: duplicateLoading, run: duplicate } = useRequest(
+    async () => await duplicateQuestionService(_id),
+    {
+      manual: true,
+      onSuccess(result) {
+        message.success('复制成功')
+        nav(`/question/edit/${result.id}`) // 跳转到问卷编辑页
       },
     }
   )
@@ -121,7 +129,7 @@ const QuestionCard: FC<PropsType> = props => {
                   type="text"
                   icon={<CopyOutlined />}
                   size="small"
-                  // disabled={duplicateLoading}
+                  disabled={duplicateLoading}
                 >
                   复制
                 </Button>
