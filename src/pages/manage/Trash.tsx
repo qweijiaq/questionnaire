@@ -6,7 +6,8 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styles from './common.module.scss'
 import ListSearch from '../../components/ListSearch'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
-import { updateQuestionService } from '../../services/question'
+import { deleteQuestionsService, updateQuestionService } from '../../services/question'
+import ListPage from '../../components/ListPage'
 // import { produce } from 'immer'
 
 const { Title } = Typography
@@ -16,7 +17,7 @@ const Trash: FC = () => {
   useTitle('蜗牛问卷 | 回收站')
 
   const { data = {}, loading, refresh } = useLoadQuestionListData({ isDeleted: true })
-  const { list = [] } = data
+  const { list = [], total = 0 } = data
 
   // 记录选中的 id
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -39,12 +40,25 @@ const Trash: FC = () => {
     }
   )
 
+  // 删除
+  const { run: deleteQuestion } = useRequest(
+    async () => await deleteQuestionsService(selectedIds),
+    {
+      manual: true,
+      onSuccess() {
+        message.success('删除成功')
+        refresh()
+        setSelectedIds([])
+      },
+    }
+  )
+
   function del() {
     confirm({
       title: '确认彻底删除该问卷？',
       icon: <ExclamationCircleOutlined />,
       content: '删除后无法找回',
-      onOk: () => alert('delete'),
+      onOk: deleteQuestion,
     })
   }
 
@@ -117,7 +131,9 @@ const Trash: FC = () => {
         {!loading && list.length === 0 && <Empty description="暂无数据"></Empty>}
         {!loading && list.length > 0 && TableElem}
       </div>
-      <div className={styles.footer}>分页</div>
+      <div className={styles.footer}>
+        <ListPage total={total} />
+      </div>
     </>
   )
 }
