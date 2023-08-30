@@ -31,14 +31,6 @@ const QuestionCard: FC<PropsType> = props => {
   const nav = useNavigate()
   const { confirm } = Modal
 
-  function del() {
-    confirm({
-      title: '确定删除该问卷？',
-      icon: <ExclamationCircleOutlined />,
-      onOk: () => message.success('删除'),
-    })
-  }
-
   // 标星与取消标星
   const [isStarState, setIsStarState] = useState(isStar)
   const { loading: changeStarLoading, run: changeStar } = useRequest(
@@ -65,6 +57,30 @@ const QuestionCard: FC<PropsType> = props => {
       },
     }
   )
+
+  // 删除
+  const [isDeletedState, setIsDeletedState] = useState(false)
+  const { loading: deleteLoading, run: deleteQuestion } = useRequest(
+    async () => await updateQuestionService(_id, { isDeleted: true }),
+    {
+      manual: true,
+      onSuccess() {
+        message.success('删除成功')
+        setIsDeletedState(true)
+      },
+    }
+  )
+
+  function del() {
+    confirm({
+      title: '确定删除该问卷？',
+      icon: <ExclamationCircleOutlined />,
+      onOk: deleteQuestion,
+    })
+  }
+
+  // 已经删除的问卷，不要再渲染卡片了
+  if (isDeletedState) return null
 
   return (
     <>
@@ -134,7 +150,7 @@ const QuestionCard: FC<PropsType> = props => {
                   复制
                 </Button>
               </Popconfirm>
-              <Button type="text" icon={<DeleteOutlined />} onClick={del}>
+              <Button type="text" icon={<DeleteOutlined />} onClick={del} disabled={deleteLoading}>
                 删除
               </Button>
             </Space>
