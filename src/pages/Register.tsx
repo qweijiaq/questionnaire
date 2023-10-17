@@ -2,10 +2,10 @@ import React, { FC } from 'react'
 import { Typography, Space, Form, Input, Button, message } from 'antd'
 import { UserAddOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
-import { LOGIN_PATHNAME } from '../router'
-import styles from './Register.module.scss'
 import { useRequest } from 'ahooks'
+import { LOGIN_PATHNAME } from '../router'
 import { registerService } from '../services/user'
+import styles from './Register.module.scss'
 
 const { Title } = Typography
 
@@ -26,7 +26,6 @@ const Register: FC = () => {
     }
   )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = (values: any) => {
     run(values) // 调用 ajax
   }
@@ -38,7 +37,7 @@ const Register: FC = () => {
           <Title level={2}>
             <UserAddOutlined />
           </Title>
-          <Title level={2}>注册用户</Title>
+          <Title level={2}>注册新用户</Title>
         </Space>
       </div>
       <div>
@@ -48,8 +47,8 @@ const Register: FC = () => {
             name="username"
             rules={[
               { required: true, message: '请输入用户名' },
-              { type: 'string', min: 5, max: 20, message: '用户名长度在 5-20 之间' },
-              { pattern: /^\w+$/, message: '用户名只能包含字母、数字或下划线' },
+              { type: 'string', min: 5, max: 20, message: '字符长度在 5-20 之间' },
+              { pattern: /^\w+$/, message: '只能是字母数字下划线' },
             ]}
           >
             <Input />
